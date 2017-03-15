@@ -1,0 +1,15 @@
+{
+  "name": "stream-monitor",
+  "version": "0.1.0",
+  "description": "Super basic express app for monitoring/visualizing many (possibly inter-related) kinesis streams",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NYPL-discovery/stream-monitor"
+  },
+  "dependencies": {
+    "aws-serverless-express": "^2.1.0",
+    "config": "^1.25.1",
+    "express": "^4.14.0"
+  }
+}
