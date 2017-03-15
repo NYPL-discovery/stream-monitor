@@ -8,8 +8,11 @@
     "url": "https://github.com/NYPL-discovery/stream-monitor"
   },
   "dependencies": {
+    "avsc": "^4.1.11",
+    "aws-sdk": "^2.17.0",
     "aws-serverless-express": "^2.1.0",
     "config": "^1.25.1",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "promise": "^7.1.1"
   }
 }
