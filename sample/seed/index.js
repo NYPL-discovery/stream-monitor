@@ -10,6 +10,10 @@ const avroSchema = {
     {"name": "number", "type": "float"}
   ]
 };
+const kinesisConfig = {
+  endpoint: 'kinesis.us-east-1.amazonaws.com',
+  region: 'us-east-1'
+};
 
 exports.handler = function(event, context, callback) {
   var avroType = avro.parse(avroSchema);
@@ -47,11 +51,9 @@ exports.handler = function(event, context, callback) {
   // map to records objects to kinesis records
   function kinesisify(entry) {
     var partitionKey = 'pk-' + guid();
-    var streamName = process.env['KINESIS_STREAM_NAME_OUT'];
     var kinesisRecord = {
       'Data': entry,
-      'PartitionKey': partitionKey,
-      'StreamName': streamName
+      'PartitionKey': partitionKey
     }
     return kinesisRecord;
   }
@@ -59,15 +61,19 @@ exports.handler = function(event, context, callback) {
   // post data to kinesis
   function postData(records) {
     var kinesis = new aws.Kinesis();
-    var promises = records.map(function(record){
-      return postRecord(kinesis, record);
-    })
-    return Promise.all(promises);
-  }
+    kinesis.config.region = kinesisConfig.region
+    kinesis.config.endpoint = kinesisConfig.endpoint
+    kinesis.region = kinesisConfig.region
+    kinesis.endpoint = kinesisConfig.endpoint
 
-  function postRecord(kinesis, record){
+    var params = {
+      Records: records,
+      StreamName: process.env['KINESIS_STREAM_NAME_OUT']
+    };
+
     return new Promise(function (resolve, reject) {
-      kinesis.putRecord(record, function(err, data) {
+      kinesis.putRecords(params, function(err, data) {
+        if (err) console.log(err);
         resolve(data);
       });
     });

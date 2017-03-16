@@ -30,5 +30,5 @@ node-lambda run
 ## Deploy
 
 ```
-node-lambda deploy --functionName streamMonitorTestSeed
+node-lambda deploy --functionName streamMonitorTestSeed --environment production
 ```
