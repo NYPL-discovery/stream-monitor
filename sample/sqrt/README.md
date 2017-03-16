@@ -33,5 +33,6 @@ node-lambda run
 Update `deploy.env` with the appropriate Kinesis stream output name
 
 ```
-node-lambda deploy --functionName streamMonitorTest1 --environment production --configFile deploy.env
+node-lambda deploy --functionName streamMonitorTest1 --environment production --configFile deploy1.env
+node-lambda deploy --functionName streamMonitorTest2 --environment production --configFile deploy2.env
 ```

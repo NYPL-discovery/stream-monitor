@@ -1,9 +1,48 @@
 {
+  "kinesis": {
+    "endpoint": "kinesis.us-east-1.amazonaws.com",
+    "region": "us-east-1"
+  },
   "streams": [
     {
-      "ShardId": "",
-      "ShardIteratorType": "LATEST",
-      "StreamName": ""
+      "ShardIteratorType": "TRIM_HORIZON",
+      "StreamName": "StreamMonitorTest1",
+      "Limit": 100,
+      "AvroSchema": {
+        "name": "Sample",
+        "type": "record",
+        "fields": [
+          {"name": "trackingId", "type": "string"},
+          {"name": "number", "type": "float"}
+        ]
+      },
+      "TrackingKey": "trackingId"
+    },{
+      "ShardIteratorType": "TRIM_HORIZON",
+      "StreamName": "StreamMonitorTest2",
+      "Limit": 100,
+      "AvroSchema": {
+        "name": "Sample",
+        "type": "record",
+        "fields": [
+          {"name": "trackingId", "type": "string"},
+          {"name": "number", "type": "float"}
+        ]
+      },
+      "TrackingKey": "trackingId"
+    },{
+      "ShardIteratorType": "TRIM_HORIZON",
+      "StreamName": "StreamMonitorTest3",
+      "Limit": 100,
+      "AvroSchema": {
+        "name": "Sample",
+        "type": "record",
+        "fields": [
+          {"name": "trackingId", "type": "string"},
+          {"name": "number", "type": "float"}
+        ]
+      },
+      "TrackingKey": "trackingId"
     }
   ]
 }
