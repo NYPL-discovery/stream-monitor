@@ -38,6 +38,8 @@ exports.handler = function(event, context, callback) {
   // post data to stream
   postData(kinesisData).then(function(res){
     callback(null, data);
+  },function(err){
+    callback(err);
   });
 
   // unique partition key
@@ -73,8 +75,14 @@ exports.handler = function(event, context, callback) {
 
     return new Promise(function (resolve, reject) {
       kinesis.putRecords(params, function(err, data) {
-        if (err) console.log(err);
-        resolve(data);
+        if (err) {
+          console.log(err);
+          reject(err);
+
+        } else {
+          resolve(data);
+        }
+
       });
     });
   }
