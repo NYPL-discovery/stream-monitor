@@ -1,0 +1,12 @@
+{
+  "name": "stream-monitor-seed-lambda",
+  "version": "0.1.0",
+  "description": "Seeds a kinesis stream",
+  "devDependencies": {},
+  "main": "index.js",
+  "dependencies": {
+    "avsc": "^4.1.11",
+    "aws-sdk": "^2.17.0",
+    "promise": "^7.1.1"
+  }
+}
