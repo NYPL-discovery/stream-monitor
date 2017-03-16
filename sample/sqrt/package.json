@@ -1,0 +1,13 @@
+{
+  "name": "stream-monitor-sample-lambda",
+  "version": "0.1.0",
+  "description": "Simply listens to a Kinesis stream, decodes the data, takes the sqrt of the data, posts it to another stream",
+  "devDependencies": {},
+  "main": "index.js",
+  "dependencies": {
+    "avsc": "^4.1.11",
+    "aws-sdk": "^2.17.0",
+    "lodash": "^4.17.4",
+    "promise": "^7.1.1"
+  }
+}
