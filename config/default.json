@@ -15,9 +15,7 @@
           {"name": "trackingId", "type": "string"},
           {"name": "number", "type": "float"}
         ]
-      },
-      "TrackingKey": "trackingId",
-      "DisplayKey": "number"
+      }
     },{
       "ShardIteratorType": "TRIM_HORIZON",
       "StreamName": "StreamMonitorTest2",
@@ -29,9 +27,7 @@
           {"name": "trackingId", "type": "string"},
           {"name": "number", "type": "float"}
         ]
-      },
-      "TrackingKey": "trackingId",
-      "DisplayKey": "number"
+      }
     },{
       "ShardIteratorType": "TRIM_HORIZON",
       "StreamName": "StreamMonitorTest3",
@@ -43,9 +39,7 @@
           {"name": "trackingId", "type": "string"},
           {"name": "number", "type": "float"}
         ]
-      },
-      "TrackingKey": "trackingId",
-      "DisplayKey": "number"
+      }
     }
   ]
 }
