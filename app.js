@@ -18,7 +18,8 @@ app.all('*', function (req, res, next) {
 
 // Retrieve streams
 app.get('/streams', function (req, res) {
-  getStreams(config.get('streams')).then(function(promiseResponses){
+  var timestamp = req.query.timestamp
+  getStreams(config.get('streams'), timestamp).then(function(promiseResponses){
     var resp = [].concat.apply([], promiseResponses);
     res.type('application/json')
     res.status(200).send(JSON.stringify(resp))
