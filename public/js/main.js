@@ -19,6 +19,7 @@ var App = (function() {
     this.polling = true;
     this.uiLoaded = false;
     this.streams = {};
+    this.streamNames = [];
     this.trackingIds = [];
     this.$container = $(this.opt.container);
 
@@ -44,7 +45,7 @@ var App = (function() {
       if (_this.polling) {
         console.log('Un-paused.');
         _this.poll();
-        
+
       } else {
         console.log('Paused.');
       }
@@ -52,6 +53,7 @@ var App = (function() {
   };
 
   App.prototype.loadUI = function(streams){
+    var _this = this;
     var streamCount = _.keys(streams).length;
     var streamWidth = 100.0 / streamCount;
     var $container = this.$container;
@@ -67,6 +69,7 @@ var App = (function() {
 
       $container.append($stream);
       left += streamWidth;
+      _this.streamNames.push(key);
     });
 
     this.uiLoaded = true;
@@ -91,6 +94,8 @@ var App = (function() {
   };
 
   App.prototype.render = function(data){
+    var _this = this;
+
     // no new records, do nothing
     if (this.uiLoaded && this.isRecordsEmpty(data)) return;
 
@@ -103,6 +108,56 @@ var App = (function() {
     // add/remove records
     this.renderNewRecords(this.streams);
     this.renderOldRecords(this.streams);
+
+    // render lines
+    this.renderLines(this.streams);
+
+  };
+
+  // renders a line between two elements
+  App.prototype.renderLine = function($fromEl, $toEl){
+    var fromIndex = $fromEl.index();
+    var toIndex = $toEl.index();
+    var height = $fromEl.outerHeight(true);
+    var diff = (toIndex - fromIndex) * height;
+    var $line = $('<div class="line"></div>');
+
+    if (diff > 0) {
+      $line.css('height', diff+'px');
+      $line.addClass('down');
+
+    } else if (diff < 0) {
+      $line.css('height', Math.abs(diff)+'px');
+      $line.addClass('up');
+
+    } else {
+      $line.addClass('straight');
+    }
+
+    $fromEl.append($line);
+  };
+
+  App.prototype.renderLines = function(streams){
+    var _this = this;
+    var trackingKey = this.opt.trackingKey;
+    var streamNames = this.streamNames;
+
+    // reset all lines
+    $('.line').remove();
+
+    _.each(streamNames, function(streamName, i){
+      if (i > 0) {
+        var records = _this.streams[streamName].Records;
+        var prevRecords = _this.streams[streamNames[i-1]].Records;
+        _.each(records, function(record){
+          var id = record[trackingKey];
+          var found = _.find(prevRecords, function(r){ return r[trackingKey]==id; });
+          if (found && ('el' in record) && ('el' in found)) {
+            _this.renderLine(found.el, record.el);
+          }
+        });
+      }
+    });
   };
 
   App.prototype.renderNewRecords = function(streams){

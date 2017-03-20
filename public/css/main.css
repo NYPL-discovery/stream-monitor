@@ -39,13 +39,14 @@ body {
 .stream-message {
   width: 100%;
   padding: 0.5rem 0 0;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0;
   font-size: 0.9rem;
   box-sizing: border-box;
   background: #eee;
   color: #000;
-  -webkit-animation: fadeInDown 1s;
-  animation: fadeInDown 1s;
+  position: relative;
+  -webkit-animation: fadeInDown 0.4s;
+  animation: fadeInDown 0.4s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
@@ -61,6 +62,37 @@ body {
   color: #555;
   margin-top: 0.2rem;
   font-weight: normal;
+}
+
+.line {
+  position: absolute;
+  width: 2rem;
+  height: auto;
+  right: -2rem;
+}
+.line.straight {
+  height: 1px;
+  background: #000;
+  top: 50%;
+}
+.line.down {
+  top: 50%;
+  background: linear-gradient(to top right,
+         rgba(0,0,0,0) 0%,
+         rgba(0,0,0,0) calc(50% - 0.8px),
+         rgba(0,0,0,1) 50%,
+         rgba(0,0,0,0) calc(50% + 0.8px),
+         rgba(0,0,0,0) 100%);
+}
+.line.up {
+  bottom: 50%;
+  background: linear-gradient(to top left,
+         rgba(0,0,0,0) 0%,
+         rgba(0,0,0,0) calc(50% - 0.8px),
+         rgba(0,0,0,1) 50%,
+         rgba(0,0,0,0) calc(50% + 0.8px),
+         rgba(0,0,0,0) 100%);
+
 }
 
 @keyframes fadeInDown {
