@@ -7,7 +7,7 @@ var App = (function() {
       displayKey: 'number',
       limitRecords: 20,
       margin: 20,
-      colors: ['#FF8A80','#BBDEFB','#FFB74D','#C5E1A5','#D1C4E9','#80CBC4','#FFF176','#F48FB1']
+      colors: ['#FF8A80','#BBDEFB','#FFB74D','#C5E1A5','#D1C4E9','#80CBC4','#FFF176','#F48FB1','#80DEEA', '#E6EE9C','#FFAB91','#E1BEE7']
     };
     this.opt = _.extend({}, defaults, options);
     this.init();
@@ -41,7 +41,13 @@ var App = (function() {
     // click
     $(document).on('click', function(){
       _this.polling = ! _this.polling;
-      if (_this.polling) _this.poll();
+      if (_this.polling) {
+        console.log('Un-paused.');
+        _this.poll();
+        
+      } else {
+        console.log('Paused.');
+      }
     });
   };
 
