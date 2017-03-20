@@ -103,8 +103,14 @@ var App = (function() {
       _.each(stream.Records, function(record, i){
         // element does not exist, add it
         if (!('el' in record)) {
-          var $message = $('<div class="stream-message" data-key="'+record[trackingKey]+'">'+record[displayKey]+'</div>');
-          $streamMessages.append($message);
+          var trackingIndex = _.indexOf(trackingIds, record[trackingKey]);
+          var colorIndex = trackingIndex % colorCount;
+          var color = colors[colorIndex];
+          // 2017-03-20T15:00:50.898Z
+          var timestamp = record.timestamp.slice(11, 23);
+          var $message = $('<div class="stream-message" data-key="'+record[trackingKey]+'"><span class="value">'+record[displayKey]+'</span><span class="timestamp">'+timestamp+'</span></div>');
+          $message.css('background-color', color);
+          $streamMessages.prepend($message);
           _this.streams[key].Records[i].el = $message;
         }
       });
@@ -133,7 +139,6 @@ var App = (function() {
     var _this = this;
     var limit = this.opt.limitRecords;
     var trackingKey = this.opt.trackingKey;
-    var trackingIds = this.trackingIds;
 
     // go through streams
     _.each(newStreamData, function(d){
@@ -156,7 +161,13 @@ var App = (function() {
         _this.streams[key] = _.clone(d);
       }
 
-      // TODO: add new tracking ids
+      // add new tracking ids
+      var newStreamTrackingIds = _.pluck(d.Records, trackingKey);
+      _.each(newStreamTrackingIds, function(id){
+        if (_.indexOf(id, _this.trackingIds) < 0) {
+          _this.trackingIds.push(id);
+        }
+      });
     });
 
     // sort and limit
