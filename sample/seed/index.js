@@ -17,6 +17,11 @@ const kinesisConfig = {
 
 exports.handler = function(event, context, callback) {
   var avroType = avro.parse(avroSchema);
+  var kinesis = new aws.Kinesis();
+  kinesis.config.region = kinesisConfig.region
+  kinesis.config.endpoint = kinesisConfig.endpoint
+  kinesis.region = kinesisConfig.region
+  kinesis.endpoint = kinesisConfig.endpoint
 
   // give seeds a tracking id
   var data = event.seeds
@@ -35,8 +40,15 @@ exports.handler = function(event, context, callback) {
     // put it in kinesis format
     .map(kinesisify);
 
-  // post data to stream
-  postData(kinesisData).then(function(res){
+  // create promises
+  var promises = kinesisData.map(function(d){
+    // randomly wait between 0-6 seconds, then post record
+    var wait = Math.floor(Math.random() * 6000);
+    return postRecord(d, wait);
+  });
+
+  // callback after promises are resolved
+  Promise.all(promises).then(function(res){
     callback(null, data);
   },function(err){
     callback(err);
@@ -55,35 +67,26 @@ exports.handler = function(event, context, callback) {
     var partitionKey = 'pk-' + guid();
     var kinesisRecord = {
       'Data': entry,
-      'PartitionKey': partitionKey
+      'PartitionKey': partitionKey,
+      'StreamName': process.env['KINESIS_STREAM_NAME_OUT']
     }
     return kinesisRecord;
   }
 
   // post data to kinesis
-  function postData(records) {
-    var kinesis = new aws.Kinesis();
-    kinesis.config.region = kinesisConfig.region
-    kinesis.config.endpoint = kinesisConfig.endpoint
-    kinesis.region = kinesisConfig.region
-    kinesis.endpoint = kinesisConfig.endpoint
-
-    var params = {
-      Records: records,
-      StreamName: process.env['KINESIS_STREAM_NAME_OUT']
-    };
-
+  function postRecord(record, wait) {
     return new Promise(function (resolve, reject) {
-      kinesis.putRecords(params, function(err, data) {
-        if (err) {
-          console.log(err);
-          reject(err);
+      setTimeout(function(){
+        kinesis.putRecord(record, function(err, data) {
+          if (err) {
+            console.log(err);
+            reject(err);
 
-        } else {
-          resolve(data);
-        }
-
-      });
+          } else {
+            resolve(data);
+          }
+        });
+      }, wait);
     });
   }
 };
