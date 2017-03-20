@@ -2,12 +2,12 @@ var App = (function() {
   function App(options) {
     var defaults = {
       container: '#main',
-      pollEvery: 2000,
+      pollEvery: 1000,
       trackingKey: 'trackingId',
       displayKey: 'number',
       limitRecords: 20,
       margin: 20,
-      colors: ['#edcbcb','#cbedcd','#cbcbed','#eed990','#f2bdf0','#f3eea1','#a1f3e3','#d8b2f1']
+      colors: ['#FF8A80','#BBDEFB','#FFB74D','#C5E1A5','#D1C4E9','#80CBC4','#FFF176','#F48FB1']
     };
     this.opt = _.extend({}, defaults, options);
     this.init();
@@ -16,7 +16,7 @@ var App = (function() {
   App.prototype.init = function(){
     var _this = this;
 
-    this.polling = false;
+    this.polling = true;
     this.uiLoaded = false;
     this.streams = {};
     this.trackingIds = [];
@@ -26,6 +26,7 @@ var App = (function() {
     this.timestamp = date.toISOString();
 
     this.loadListeners();
+    this.poll();
   };
 
   App.prototype.isRecordsEmpty = function(streams){
@@ -38,7 +39,10 @@ var App = (function() {
     var _this = this;
 
     // click
-    this.$container.on('click', function(){ _this.poll(); });
+    $(document).on('click', function(){
+      _this.polling = ! _this.polling;
+      if (_this.polling) _this.poll();
+    });
   };
 
   App.prototype.loadUI = function(streams){
@@ -64,6 +68,7 @@ var App = (function() {
 
   App.prototype.poll = function(){
     var _this = this;
+    var pollEvery = this.opt.pollEvery;
     var params = {
       timestamp: this.timestamp
     };
@@ -71,6 +76,11 @@ var App = (function() {
     $.getJSON('streams', params, function(resp){
       console.log(resp);
       _this.render(resp);
+      if (_this.polling) {
+        setTimeout(function(){
+          _this.poll();
+        }, pollEvery);
+      }
     });
   };
 
