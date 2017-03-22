@@ -167,22 +167,42 @@ var App = (function() {
     var colors = this.opt.colors;
     var colorCount = colors.length;
     var trackingIds = this.trackingIds;
+    var streamNames = this.streamNames;
 
-    _.each(streams, function(stream, key){
-      var $streamMessages = $('.stream[data-key="'+key+'"] .stream-messages').first();
+    _.each(streamNames, function(streamName, i){
+      var stream = _this.streams[streamName];
+      var $streamMessages = $('.stream[data-key="'+streamName+'"] .stream-messages').first();
+      var prevRecords = false;
+      if (i > 0) {
+        prevRecords = _this.streams[streamNames[i-1]].Records;
+      }
 
-      _.each(stream.Records, function(record, i){
+      _.each(stream.Records, function(record, j){
+        var id = record[trackingKey];
+        // retrieve time diff from previous stream
+        var prevSeconds = false;
+        if (prevRecords) {
+          var found = _.find(prevRecords, function(r){ return r[trackingKey]==id; });
+          if (found && 'timestamp' in found) {
+            prevSeconds = _this._getSeconds(found.timestamp.slice(11, 23));
+          }
+        }
         // element does not exist, add it
         if (!('el' in record)) {
           var trackingIndex = _.indexOf(trackingIds, record[trackingKey]);
           var colorIndex = trackingIndex % colorCount;
           var color = colors[colorIndex];
-          // 2017-03-20T15:00:50.898Z
+          // 2017-03-20T15:00:50.898Z --> 15:00:50.898
           var timestamp = record.timestamp.slice(11, 23);
+          // show the difference in seconds
+          if (prevSeconds) {
+            var seconds = _this._getSeconds(timestamp);
+            timestamp = _this._round(seconds - prevSeconds, 2) + " seconds";
+          }
           var $message = $('<div class="stream-message" data-key="'+record[trackingKey]+'"><span class="value">'+record[displayKey]+'</span><span class="timestamp">'+timestamp+'</span></div>');
           $message.css('background-color', color);
           $streamMessages.prepend($message);
-          _this.streams[key].Records[i].el = $message;
+          _this.streams[streamName].Records[j].el = $message;
         }
       });
     });
@@ -265,6 +285,16 @@ var App = (function() {
       var adjustedDate = new Date(latestDate.getTime() + 1);
       this.timestamp = adjustedDate.toISOString();
     }
+  };
+
+  App.prototype._getSeconds = function(hhmmss){
+    var parts = hhmmss.split(':'); // split it at the colons
+    var seconds = (+parts[0]) * 60 * 60 + (+parts[1]) * 60 + (+parts[2]);
+    return seconds;
+  };
+
+  App.prototype._round = function(num, dec){
+    return num.toFixed(dec);
   };
 
   return App;
