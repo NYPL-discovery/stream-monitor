@@ -24,6 +24,7 @@ var App = (function() {
     this.$container = $(this.opt.container);
 
     var date = new Date();
+    date.setHours(date.getHours() - 1);
     this.timestamp = date.toISOString();
 
     this.loadListeners();
@@ -97,7 +98,12 @@ var App = (function() {
     var _this = this;
 
     // no new records, do nothing
-    if (this.uiLoaded && this.isRecordsEmpty(data)) return;
+    if (this.uiLoaded && this.isRecordsEmpty(data)) {
+      var date = new Date();
+      // date.setHours(date.getHours() - 1);
+      this.timestamp = date.toISOString();
+      return;
+    }
 
     // load new stream data
     if (data) this.streamsLoad(data);
